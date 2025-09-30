@@ -13,7 +13,7 @@
   }
 
   // Configuration
-  const API_URL = 'https://lookr-backend.vercel.app/api/query';'; // Will be your Vercel API
+  const API_URL = 'https://lookr-backend.vercel.app/api/query';
   
   // Create the widget container
   const widgetContainer = document.createElement('div');
@@ -351,24 +351,6 @@
     .lookr-feedback-btn:hover {
       background: #f6f9fc;
       transform: scale(1.1);
-    }
-
-    .lookr-powered-by {
-      text-align: center;
-      padding: 16px;
-      border-top: 1px solid #f6f9fc;
-      font-size: 12px;
-      color: #8898aa;
-    }
-
-    .lookr-powered-by a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .lookr-powered-by a:hover {
-      text-decoration: underline;
     }
 
     @media (max-width: 640px) {
