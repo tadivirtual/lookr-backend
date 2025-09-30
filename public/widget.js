@@ -13,7 +13,7 @@
   }
 
   // Configuration
-  const API_URL = 'https://lookr.ai/api/query'; // Will be your Vercel API
+  const API_URL = 'const API_URL = 'https://lookr-backend.vercel.app/api/query';'; // Will be your Vercel API
   
   // Create the widget container
   const widgetContainer = document.createElement('div');
