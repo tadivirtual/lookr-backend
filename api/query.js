@@ -213,9 +213,19 @@ async function logQuery(siteId, question, answer) {
     });
 
     // Increment query count
-    await supabase.rpc('increment', { 
-      row_id: siteId 
-    });
+    // Increment query count
+    const { data: site } = await supabase
+      .from('sites')
+      .select('query_count')
+      .eq('id', siteId)
+      .single();
+    
+    if (site) {
+      await supabase
+        .from('sites')
+        .update({ query_count: site.query_count + 1 })
+        .eq('id', siteId);
+    }
     
   } catch (error) {
     console.error('Failed to log query:', error);
