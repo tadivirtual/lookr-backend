@@ -112,19 +112,6 @@ async function validateSiteKey(siteKey, origin) {
   };
 }
 
-  // Check rate limit
-  const limitExceeded = site.query_count >= site.query_limit;
-
-  return {
-    valid: true,
-    limitExceeded,
-    id: site.id,
-    websiteUrl: site.website_url,
-    queryLimit: site.query_limit,
-    queryCount: site.query_count
-  };
-}
-
 // Get website content (from cache or fresh scrape)
 async function getWebsiteContent(siteKey) {
   const { data: site, error } = await supabase
