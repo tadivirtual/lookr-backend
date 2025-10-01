@@ -1,5 +1,9 @@
 {
   "name": "lookr-backend",
   "version": "1.0.0",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+     "@supabase/supabase-js": "^2.38.0",
+     "cheerio": "^1.0.0-rc.12"
+   }
 }
