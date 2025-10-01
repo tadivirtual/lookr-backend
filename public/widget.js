@@ -64,11 +64,11 @@
       right: 24px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 16px 32px;
+      padding: 18px 40px;
       border-radius: 50px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -77,6 +77,7 @@
       z-index: 999998;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: none;
+      letter-spacing: 0.3px;
     }
 
     .lookr-trigger:hover {
