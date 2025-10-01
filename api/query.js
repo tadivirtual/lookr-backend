@@ -201,7 +201,6 @@ Answer (be concise, helpful, and friendly):`;
 }
 
 // Log query for analytics
-// Log query for analytics
 async function logQuery(siteId, question, answer) {
   try {
     // Log query
@@ -212,7 +211,6 @@ async function logQuery(siteId, question, answer) {
       response_time: 0
     });
 
-    // Increment query count
     // Increment query count
     const { data: site } = await supabase
       .from('sites')
