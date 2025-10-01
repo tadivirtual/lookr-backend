@@ -110,21 +110,22 @@ async function validateSiteKey(siteKey, origin) {
 }
 
 // Get website content (from cache or fresh scrape)
-async function getWebsiteContent(websiteUrl) {
-  // TODO: Check Supabase for cached content
-  // If cache is fresh (<7 days), return it
-  // Otherwise, scrape the site
-  
-  // For now, return mock content
-  return {
-    pages: [
-      {
-        url: websiteUrl,
-        title: 'Homepage',
-        content: 'Welcome to our website. We offer AI-powered search solutions for businesses. Our pricing starts at $9/month for unlimited sites. We provide 24/7 support and easy integration.'
-      }
-    ]
-  };
+async function getWebsiteContent(siteKey) {
+  const { data: site, error } = await supabase
+    .from('sites')
+    .select('content_cache')
+    .eq('site_key', siteKey)
+    .single();
+
+  if (error || !site) {
+    throw new Error('Site not found');
+  }
+
+  if (!site.content_cache || !site.content_cache.pages) {
+    throw new Error('No content available. Please scrape the website first.');
+  }
+
+  return site.content_cache;
 }
 
 // Call Gemini AI with context
