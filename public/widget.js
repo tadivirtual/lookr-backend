@@ -64,15 +64,15 @@
       right: 24px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 14px 24px;
+      padding: 16px 32px;
       border-radius: 50px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
       box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       z-index: 999998;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -170,10 +170,10 @@
     }
 
     .lookr-search-container {
-      padding: 24px;
+      padding: 32px;
       border-bottom: 2px solid #f6f9fc;
       display: flex;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
     }
 
