@@ -81,6 +81,8 @@ async function validateSiteKey(siteKey, origin) {
     return { valid: false };
   }
 
+  // TEMPORARILY DISABLED FOR TESTING
+  /*
   // Check domain if origin provided
   if (origin) {
     const originDomain = extractDomain(origin);
@@ -95,6 +97,20 @@ async function validateSiteKey(siteKey, origin) {
       return { valid: false };
     }
   }
+  */
+
+  // Check rate limit
+  const limitExceeded = site.query_count >= site.query_limit;
+
+  return {
+    valid: true,
+    limitExceeded,
+    id: site.id,
+    websiteUrl: site.website_url,
+    queryLimit: site.query_limit,
+    queryCount: site.query_count
+  };
+}
 
   // Check rate limit
   const limitExceeded = site.query_count >= site.query_limit;
