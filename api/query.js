@@ -105,10 +105,14 @@ async function getWebsiteContent(websiteUrl) {
 // Call Gemini AI with context
 async function getAIAnswer(question, websiteContent) {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  
-  if (!GEMINI_API_KEY) {
-    throw new Error('GEMINI_API_KEY not configured');
-  }
+
+console.log('API Key exists:', !!GEMINI_API_KEY);
+console.log('API Key length:', GEMINI_API_KEY?.length);
+console.log('API Key starts with:', GEMINI_API_KEY?.substring(0, 10));
+
+if (!GEMINI_API_KEY) {
+  throw new Error('GEMINI_API_KEY not configured');
+}
 
   // Prepare context from website content
   const context = websiteContent.pages
