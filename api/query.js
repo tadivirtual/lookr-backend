@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     }
 
     // 2. Get website content (from cache or scrape)
-    const websiteContent = await getWebsiteContent(siteData.websiteUrl);
+    const websiteContent = await getWebsiteContent(siteKey);
 
     // 3. Call Gemini AI with context
     const answer = await getAIAnswer(question, websiteContent);
