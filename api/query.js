@@ -70,23 +70,42 @@ export default async function handler(req, res) {
 
 // Validate site key and check permissions
 async function validateSiteKey(siteKey, origin) {
-  // TODO: Connect to Supabase
-  // For now, mock validation
-  
-  // In production, this would:
-  // 1. Query Supabase for site by siteKey
-  // 2. Check if origin domain matches allowed_domains
-  // 3. Check query count vs limit
-  // 4. Return site data
-  
-  // Mock response for development
+  // Query Supabase for site
+  const { data: site, error } = await supabase
+    .from('sites')
+    .select('*')
+    .eq('site_key', siteKey)
+    .single();
+
+  if (error || !site) {
+    return { valid: false };
+  }
+
+  // Check domain if origin provided
+  if (origin) {
+    const originDomain = extractDomain(origin);
+    const allowed = site.allowed_domains || [];
+    
+    const domainMatches = allowed.some(domain => 
+      originDomain === domain || originDomain.endsWith('.' + domain)
+    );
+
+    if (!domainMatches) {
+      console.log(`Domain mismatch: ${originDomain} not in ${allowed}`);
+      return { valid: false };
+    }
+  }
+
+  // Check rate limit
+  const limitExceeded = site.query_count >= site.query_limit;
+
   return {
     valid: true,
-    limitExceeded: false,
-    id: 'site_123',
-    websiteUrl: extractDomain(origin),
-    queryLimit: 1000,
-    queryCount: 50
+    limitExceeded,
+    id: site.id,
+    websiteUrl: site.website_url,
+    queryLimit: site.query_limit,
+    queryCount: site.query_count
   };
 }
 
