@@ -55,7 +55,6 @@
     #lookr-widget * {
       box-sizing: border-box;
       margin: 0;
-      padding: 0;
     }
 
     .lookr-trigger {
@@ -64,7 +63,7 @@
       right: 24px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 18px 50px;
+      padding: 18px 5px;
       border-radius: 50px;
       display: flex;
       align-items: center;
