@@ -201,18 +201,26 @@ Answer (be concise, helpful, and friendly):`;
 }
 
 // Log query for analytics
+// Log query for analytics
 async function logQuery(siteId, question, answer) {
-  // TODO: Log to Supabase
-  // Insert into queries table with:
-  // - site_id
-  // - question
-  // - answer
-  // - timestamp
-  // - response_time
-  
-  console.log('Query logged:', { siteId, question: question.substring(0, 50) });
-}
+  try {
+    // Log query
+    await supabase.from('queries').insert({
+      site_id: siteId,
+      question,
+      answer,
+      response_time: 0
+    });
 
+    // Increment query count
+    await supabase.rpc('increment', { 
+      row_id: siteId 
+    });
+    
+  } catch (error) {
+    console.error('Failed to log query:', error);
+  }
+}
 // Extract domain from URL
 function extractDomain(url) {
   try {
