@@ -43,11 +43,24 @@ export default async function handler(req, res) {
       maxDepth: 3
     });
 
-    const pages = await scraper.scrape();
+    let pages;
+    try {
+      pages = await scraper.scrape();
+    } catch (error) {
+      if (error.message === 'JAVASCRIPT_SITE') {
+        return res.status(400).json({ 
+          error: 'JavaScript-Rendered Site Detected',
+          message: 'This website uses JavaScript to display content (common with Wix, Squarespace, Webflow, and modern site builders). Our basic scraper can only read traditional HTML sites like WordPress. JavaScript site support is available on our Pro plan. Contact support@lookr.ai to upgrade.',
+          isJavaScriptSite: true
+        });
+      }
+      throw error;
+    }
 
     if (pages.length === 0) {
       return res.status(400).json({ 
-        error: 'No content found. The website may be blocking our crawler or contains no readable text.' 
+        error: 'No content found',
+        message: 'The website may be blocking our crawler or contains no readable text. Please ensure the site is publicly accessible.'
       });
     }
 
