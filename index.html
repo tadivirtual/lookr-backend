@@ -590,8 +590,8 @@
   <!-- Demo Section -->
   <section id="demo" class="demo-section">
     <div class="container">
-      <h2 class="section-title">Try It Now</h2>
-      <p class="section-subtitle">See how Lookr works with your website</p>
+      <h2 class="section-title">Check Compatibility</h2>
+      <p class="section-subtitle">Verify your site works with Lookr</p>
 
       <div class="demo-box">
         <div class="demo-input-group">
@@ -684,17 +684,18 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ url, preview: true })
+          body: JSON.stringify({ url })
         });
 
         const data = await response.json();
 
         if (response.ok) {
           statusDiv.className = 'demo-status success';
-          statusDiv.innerHTML = `Perfect! We found ${data.pagesScraped} pages. Opening your preview...`;
+          statusDiv.innerHTML = `Perfect! Your site is compatible. We found ${data.pagesScraped} pages.<br><br><strong>Ready to add the widget?</strong> Choose a plan below to get started.`;
           
+          // Scroll to pricing
           setTimeout(() => {
-            window.open(`/preview.html?key=${data.siteKey}`, '_blank');
+            document.getElementById('pricing').scrollIntoView({ behavior: 'smooth' });
           }, 1000);
         } else {
           statusDiv.className = 'demo-status error';
