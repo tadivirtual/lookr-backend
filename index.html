@@ -27,6 +27,56 @@
       padding: 0 20px;
     }
 
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e0e0e0;
+      z-index: 1000;
+      padding: 20px 0;
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-size: 24px;
+      font-weight: 600;
+      color: #000000;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #333333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #000000;
+    }
+
+    .hero {
+      padding-top: 140px;
+    }
+
     /* Hero Section */
     .hero {
       min-height: 90vh;
@@ -450,8 +500,20 @@
   </style>
 </head>
 <body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-content">
+      <a href="#" class="nav-logo">Lookr.ai</a>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+    </div>
+  </nav>
+
   <!-- Hero Section -->
-  <section class="hero">
+  <section class="hero" id="hero">
     <div class="container">
       <div class="hero-content">
         <div class="hero-top">
@@ -542,19 +604,17 @@
           >
         </div>
 
-        <button class="cta-button" style="width: 100%;" onclick="scrapeWebsite()">
-          Scrape & Generate Code
+        <button class="cta-button" style="width: 100%; justify-content: center;" onclick="scrapeWebsite()">
+          Check Compatibility
         </button>
 
         <div id="demo-status" class="demo-status"></div>
-        
-        <div id="embed-code" class="embed-code"></div>
       </div>
     </div>
   </section>
 
   <!-- Pricing Section -->
-  <section class="pricing-section">
+  <section class="pricing-section" id="pricing">
     <div class="container">
       <h2 class="section-title">Plans and Pricing</h2>
       
@@ -607,7 +667,6 @@
     async function scrapeWebsite() {
       const urlInput = document.getElementById('website-url');
       const statusDiv = document.getElementById('demo-status');
-      const embedDiv = document.getElementById('embed-code');
       const url = urlInput.value.trim();
 
       if (!url) {
@@ -616,10 +675,8 @@
         return;
       }
 
-      // Show loading
       statusDiv.className = 'demo-status loading';
-      statusDiv.textContent = 'Scraping your website... This may take 30-60 seconds.';
-      embedDiv.style.display = 'none';
+      statusDiv.textContent = 'Analyzing your website... This may take 30-60 seconds.';
 
       try {
         const response = await fetch('https://lookr-backend-tadis-projects-fd06034e.vercel.app/api/scrape', {
@@ -627,29 +684,29 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ url })
+          body: JSON.stringify({ url, preview: true })
         });
 
         const data = await response.json();
 
         if (response.ok) {
           statusDiv.className = 'demo-status success';
-          statusDiv.textContent = `✓ Successfully scraped ${data.pagesScraped} pages! Here's your embed code:`;
+          statusDiv.innerHTML = `Perfect! We found ${data.pagesScraped} pages. Opening your preview...`;
           
-          const embedCode = `<script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="${data.siteKey}"></script>`;
-          embedDiv.textContent = embedCode;
-          embedDiv.style.display = 'block';
+          setTimeout(() => {
+            window.open(`/preview.html?key=${data.siteKey}`, '_blank');
+          }, 1000);
         } else {
           statusDiv.className = 'demo-status error';
           if (data.isJavaScriptSite) {
-            statusDiv.textContent = `⚠️ ${data.error}: ${data.message}`;
+            statusDiv.textContent = `${data.error}: ${data.message}`;
           } else {
             statusDiv.textContent = `Error: ${data.error || data.message}`;
           }
         }
       } catch (error) {
         statusDiv.className = 'demo-status error';
-        statusDiv.textContent = 'Failed to scrape website. Please try again.';
+        statusDiv.textContent = 'Failed to analyze website. Please try again.';
       }
     }
   </script>
