@@ -20,14 +20,14 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 12px 20px;
+      padding: 10px 18px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       font-size: 15px;
       font-weight: 600;
-      line-height: 1;
+      line-height: 1.2;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
       cursor: pointer;
       z-index: 999999;
