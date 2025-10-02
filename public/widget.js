@@ -16,11 +16,12 @@
       position: fixed;
       bottom: 24px;
       right: 24px;
+      height: 30px;
       background: #000000;
       color: white;
       border: none;
-      border-radius: 12px;
-      padding: 10px 18px;
+      border-radius: 20px;
+      padding: 10px 30px;
       display: flex;
       align-items: center;
       justify-content: center;
