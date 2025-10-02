@@ -21,7 +21,7 @@
       color: white;
       border: none;
       border-radius: 20px;
-      padding: 20px 30px;
+      padding: 10px 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -153,6 +153,38 @@
       cursor: not-allowed;
     }
 
+    #lookr-suggestions {
+      margin-top: 16px;
+    }
+
+    #lookr-suggestions-label {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .lookr-suggestion-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      transition: all 0.2s;
+    }
+
+    .lookr-suggestion-btn:hover {
+      background: #f3f4f6;
+      border-color: #d1d5db;
+    }
+
     #lookr-answer {
       margin-top: 20px;
       padding: 16px;
@@ -234,6 +266,12 @@
           placeholder="Ask a question about this website..."
         />
         <button id="lookr-search-button">Search</button>
+        <div id="lookr-suggestions">
+          <div id="lookr-suggestions-label">Suggested questions:</div>
+          <button class="lookr-suggestion-btn" data-question="What are your pricing plans?">What are your pricing plans?</button>
+          <button class="lookr-suggestion-btn" data-question="How does this work?">How does this work?</button>
+          <button class="lookr-suggestion-btn" data-question="How do I get started?">How do I get started?</button>
+        </div>
         <div id="lookr-loading">Searching...</div>
         <div id="lookr-error"></div>
         <div id="lookr-answer"></div>
@@ -252,6 +290,8 @@
   const loadingDiv = document.getElementById('lookr-loading');
   const errorDiv = document.getElementById('lookr-error');
   const answerDiv = document.getElementById('lookr-answer');
+  const suggestionButtons = document.querySelectorAll('.lookr-suggestion-btn');
+  const suggestionsDiv = document.getElementById('lookr-suggestions');
 
   // Open modal
   button.addEventListener('click', () => {
@@ -281,6 +321,7 @@
     // Reset UI
     answerDiv.classList.remove('visible');
     errorDiv.classList.remove('visible');
+    suggestionsDiv.style.display = 'none';
     loadingDiv.classList.add('visible');
     searchButton.disabled = true;
 
@@ -330,6 +371,15 @@
     if (e.key === 'Enter') {
       handleSearch();
     }
+  });
+
+  // Handle suggestion button clicks
+  suggestionButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const question = btn.getAttribute('data-question');
+      searchInput.value = question;
+      handleSearch();
+    });
   });
 
 })();
