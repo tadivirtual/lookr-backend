@@ -90,12 +90,15 @@ export default async function handler(req, res) {
     if (existingSite) {
       // Update existing site
       const { error } = await supabase
-        .from('sites')
-        .update({
-          content_cache: { pages },
-          last_scraped: new Date().toISOString(),
-          website_url: url
-        })
+  .from('sites')
+  .insert({
+    site_key: finalSiteKey,
+    email,
+    allowed_domains: allowedDomains,
+    website_url: url,
+    content_cache: { pages },
+    last_scraped: new Date().toISOString()
+  });
         .eq('site_key', finalSiteKey);
 
       if (error) {
