@@ -1,6 +1,6 @@
 {
   "buildCommand": null,
-  "outputDirectory": ".",
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
     { "source": "/api/(.*)", "destination": "/api/$1" }
