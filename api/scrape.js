@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { url, siteKey, email } = req.body;
+    const { url, siteKey, email, preview } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: 'URL is required' });
