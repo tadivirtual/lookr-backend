@@ -56,6 +56,11 @@
       text-decoration: none;
     }
 
+    .nav-logo img {
+      height: 40px;
+      display: block;
+    }
+
     .nav-links {
       display: flex;
       gap: 40px;
@@ -142,6 +147,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      text-decoration: none;
     }
 
     .cta-button:hover {
@@ -468,6 +474,10 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      color: #1a1a1a;
     }
 
     .pricing-cta:hover {
@@ -504,8 +514,8 @@
   <nav class="nav">
     <div class="nav-content">
       <a href="#" class="nav-logo">
-  <img src="/lookr-logo.png" alt="Lookr.ai" style="height: 40px;">
-</a>
+        <img src="/lookrlogo.png" alt="Lookr.ai">
+      </a>
       <ul class="nav-links">
         <li><a href="#hero">Home</a></li>
         <li><a href="#demo">Demo</a></li>
@@ -529,15 +539,11 @@
             <p class="hero-description">
               Let visitors ask questions and get instant AI-powered answers. One line of code. No training required. No weird fake person chatbot.
             </p>
-            <p class="no-cc">*No credit card required</p>
-            <button class="cta-button" onclick="document.getElementById('demo').scrollIntoView({behavior: 'smooth'})">
-              ✨ Demo Your Site Free
+            <button class="cta-button" onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">
+              Activate AI On My Site in 1 Minute
             </button>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
 
         <div class="mockup">
           <div class="desktop-mockup">
@@ -630,7 +636,7 @@
             <li>Basic customization</li>
             <li>Email support</li>
           </ul>
-          <button class="pricing-cta">Get Started</button>
+          <a href="https://buy.stripe.com/cNi8wRakGdQd5Vp24sbII00" class="pricing-cta" target="_blank">Get Started</a>
         </div>
 
         <div class="pricing-card featured">
@@ -644,7 +650,7 @@
             <li>Remove branding</li>
             <li>Analytics dashboard</li>
           </ul>
-          <button class="pricing-cta">Get Started</button>
+          <a href="https://buy.stripe.com/4gM9AV50mcM9gA37oMbII01" class="pricing-cta" target="_blank">Get Started</a>
         </div>
 
         <div class="pricing-card">
@@ -659,7 +665,7 @@
             <li>Advanced analytics</li>
             <li>API access</li>
           </ul>
-          <button class="pricing-cta">Get Started</button>
+          <a href="https://buy.stripe.com/8x214p8cyh2pdnRcJ6bII02" class="pricing-cta" target="_blank">Get Started</a>
         </div>
       </div>
     </div>
