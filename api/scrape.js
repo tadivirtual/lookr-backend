@@ -80,7 +80,7 @@ export default async function handler(req, res) {
       allowedDomains.push(domain.replace('www.', ''));
     }
 
-    // Store in database
+   // Store in database
     const { data: existingSite } = await supabase
       .from('sites')
       .select('*')
@@ -90,15 +90,14 @@ export default async function handler(req, res) {
     if (existingSite) {
       // Update existing site
       const { error } = await supabase
-  .from('sites')
-  .insert({
-    site_key: finalSiteKey,
-    email,
-    allowed_domains: allowedDomains,
-    website_url: url,
-    content_cache: { pages },
-    last_scraped: new Date().toISOString()
-  });
+        .from('sites')
+        .update({
+          content_cache: { pages },
+          last_scraped: new Date().toISOString(),
+          website_url: url,
+          expires_at: preview ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() : null,
+          is_preview: preview || false
+        })
         .eq('site_key', finalSiteKey);
 
       if (error) {
@@ -117,7 +116,9 @@ export default async function handler(req, res) {
           allowed_domains: allowedDomains,
           website_url: url,
           content_cache: { pages },
-          last_scraped: new Date().toISOString()
+          last_scraped: new Date().toISOString(),
+          expires_at: preview ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() : null,
+          is_preview: preview || false
         });
 
       if (error) {
