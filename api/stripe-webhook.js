@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 // Stripe webhook secret - get this from Stripe dashboard
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET_TEST || process.env.STRIPE_WEBHOOK_SECRET;
 
 export const config = {
   api: {
