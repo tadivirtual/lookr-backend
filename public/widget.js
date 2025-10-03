@@ -1,9 +1,10 @@
 (function() {
   'use strict';
 
-  // Get the site key from the script tag
+  // Get the site key and color from the script tag
   const scriptTag = document.currentScript;
   const siteKey = scriptTag.getAttribute('data-key');
+  const buttonColor = scriptTag.getAttribute('data-color') || '#000000';
 
   if (!siteKey) {
     console.error('Lookr Widget: data-key attribute is required');
@@ -17,11 +18,11 @@
       bottom: 24px;
       right: 24px;
       height: 30px;
-      background: #000000;
+      background: ${buttonColor};
       color: white;
       border: none;
       border-radius: 20px;
-      padding: 20px 30px;
+      padding: 10px 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -37,7 +38,8 @@
     }
 
     #lookr-widget-button:hover {
-      background: #333333;
+      background: ${buttonColor};
+      opacity: 0.9;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
