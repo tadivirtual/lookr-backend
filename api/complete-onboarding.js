@@ -53,17 +53,35 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Database error', details: error.message });
   }
 
-  // AUTO-SCRAPE: Trigger scraping in the background
+  // AUTO-SCRAPE: Trigger scraping for all domains in the background
   try {
     const baseUrl = req.headers.origin || `https://${req.headers.host}`;
+    
+    // Build array of all URLs to scrape
+    const urlsToScrape = [fullUrl];
+    if (additional_domains) {
+      const extraUrls = additional_domains.split(',').map(d => {
+        let url = d.trim();
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://' + url;
+        }
+        return url;
+      });
+      urlsToScrape.push(...extraUrls);
+    }
+    
+    // Scrape all URLs
     const scrapeResponse = await fetch(`${baseUrl}/api/scrape`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: fullUrl, siteKey: siteKey })
+      body: JSON.stringify({ 
+        urls: urlsToScrape,  // Pass array of URLs
+        siteKey: siteKey 
+      })
     });
     
     // Don't wait for scrape to complete - let it run in background
-    console.log('Scrape triggered for:', siteKey);
+    console.log('Scrape triggered for:', siteKey, 'URLs:', urlsToScrape.length);
   } catch (error) {
     console.error('Failed to trigger scrape:', error);
     // Don't fail the request if scraping fails - user can still get embed code
