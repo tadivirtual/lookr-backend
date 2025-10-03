@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Done For You Setup - Lookr.ai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .badge {
+      display: inline-block;
+      background: #000000;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 32px;
+      font-size: 16px;
+    }
+    .info-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    .info-box p {
+      color: #166534;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .form-group {
+      margin-bottom: 24px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #374151;
+      font-size: 14px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #000000;
+    }
+    small {
+      display: block;
+      margin-top: 6px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+    .color-picker {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .color-option {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .color-option:hover {
+      transform: scale(1.05);
+    }
+    .color-option.selected {
+      border-color: #000000;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #000000;
+    }
+    .color-option.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    button {
+      background: #000000;
+      color: white;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #333333;
+    }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .loading {
+      text-align: center;
+      color: #6b7280;
+      margin-top: 12px;
+      display: none;
+    }
+    .loading.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <span class="badge">DONE FOR YOU SERVICE</span>
+    <h1>We'll Install It For You</h1>
+    <p class="subtitle">Provide your details below and we'll have your widget live within 24 hours</p>
+    
+    <div class="info-box">
+      <p><strong>What happens next:</strong> Our team will securely log in to your website, install the Lookr widget, test it, and send you confirmation when it's live. No technical skills required on your end!</p>
+    </div>
+    
+    <form id="dfy-form">
+      <div class="form-group">
+        <label for="website">Your Website URL</label>
+        <input type="url" id="website" name="website" placeholder="https://yoursite.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="platform">Website Platform</label>
+        <select id="platform" name="platform" required>
+          <option value="">-- Select Platform --</option>
+          <option value="wordpress">WordPress</option>
+          <option value="shopify">Shopify</option>
+          <option value="wix">Wix</option>
+          <option value="squarespace">Squarespace</option>
+          <option value="webflow">Webflow</option>
+          <option value="custom">Custom/HTML</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="color-picker-label">Choose Button Color</label>
+        <div class="color-picker">
+          <div class="color-option selected" data-color="#000000" style="background: #000000" title="Black"></div>
+          <div class="color-option" data-color="#FFFFFF" style="background: #FFFFFF; border: 2px solid #e5e7eb;" title="White"></div>
+          <div class="color-option" data-color="#6B7280" style="background: #6B7280" title="Gray"></div>
+          <div class="color-option" data-color="#3B82F6" style="background: #3B82F6" title="Blue"></div>
+          <div class="color-option" data-color="#EF4444" style="background: #EF4444" title="Red"></div>
+          <div class="color-option" data-color="#10B981" style="background: #10B981" title="Green"></div>
+          <div class="color-option" data-color="#F59E0B" style="background: #F59E0B" title="Amber"></div>
+          <div class="color-option" data-color="#8B5CF6" style="background: #8B5CF6" title="Purple"></div>
+          <div class="color-option" data-color="#EC4899" style="background: #EC4899" title="Pink"></div>
+        </div>
+        <input type="hidden" id="color" name="color" value="#000000">
+      </div>
+
+      <div class="form-group">
+        <label for="credentials">Login Credentials / Access Instructions</label>
+        <textarea id="credentials" name="credentials" placeholder="WordPress Admin URL: https://yoursite.com/wp-admin&#10;Username: admin@yoursite.com&#10;Password: ********&#10;&#10;Or provide FTP details, or instructions on how to grant us access." required></textarea>
+        <small>Don't worry - we'll delete this info after installation and never store it long-term</small>
+      </div>
+
+      <div class="form-group">
+        <label for="contact">Best Contact Method</label>
+        <input type="text" id="contact" name="contact" placeholder="Email or phone number" required>
+        <small>In case we need to reach you during installation</small>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Special Instructions (optional)</label>
+        <textarea id="notes" name="notes" placeholder="Anything else we should know? Specific page to install on, preferred placement, etc."></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn">Submit for Installation</button>
+      <div class="loading" id="loading">Submitting your request...</div>
+    </form>
+  </div>
+
+  <script>
+    // Get email from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const tier = urlParams.get('tier');
+
+    // Color picker
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        document.getElementById('color').value = option.dataset.color;
+      });
+    });
+
+    // Form submission
+    document.getElementById('dfy-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const loading = document.getElementById('loading');
+      
+      submitBtn.disabled = true;
+      loading.classList.add('visible');
+      
+      const formData = new FormData(e.target);
+      const data = {
+        ...Object.fromEntries(formData),
+        email: email,
+        tier: tier,
+        dfy: true
+      };
+      
+      try {
+        const response = await fetch('/api/complete-onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        
+        if (response.ok) {
+          // Redirect to DFY success page
+          window.location.href = `/success-dfy.html?key=${result.siteKey}`;
+        } else {
+          alert('Error: ' + (result.error || 'Something went wrong'));
+          submitBtn.disabled = false;
+          loading.classList.remove('visible');
+        }
+      } catch (error) {
+        alert('Network error. Please try again.');
+        submitBtn.disabled = false;
+        loading.classList.remove('visible');
+      }
+    });
+  </script>
+</body>
+</html>
