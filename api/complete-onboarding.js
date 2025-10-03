@@ -12,11 +12,17 @@ export default async function handler(req, res) {
 
   const { website, color, additional_domains, email, tier } = req.body;
 
+  // Ensure URL has https://
+  let fullUrl = website;
+  if (!fullUrl.startsWith('http://') && !fullUrl.startsWith('https://')) {
+    fullUrl = 'https://' + fullUrl;
+  }
+
   // Generate unique site key
-  const siteKey = 'site_' + Math.random().toString(36).substr(2, 9);
+  const siteKey = 'site_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
   // Parse domains
-  const domains = [new URL(website).hostname];
+  const domains = [new URL(fullUrl).hostname];
   if (additional_domains) {
     const extra = additional_domains.split(',').map(d => d.trim());
     domains.push(...extra);
@@ -36,15 +42,31 @@ export default async function handler(req, res) {
     .insert({
       site_key: siteKey,
       email: email,
-      website_url: website,
+      website_url: fullUrl,
       allowed_domains: domains,
-      button_color: color, // Add this column to your database first!
+      button_color: color,
       query_limit: queryLimit
     });
 
   if (error) {
     console.error('Supabase error:', error);
     return res.status(500).json({ error: 'Database error', details: error.message });
+  }
+
+  // AUTO-SCRAPE: Trigger scraping in the background
+  try {
+    const baseUrl = req.headers.origin || `https://${req.headers.host}`;
+    const scrapeResponse = await fetch(`${baseUrl}/api/scrape`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: fullUrl, siteKey: siteKey })
+    });
+    
+    // Don't wait for scrape to complete - let it run in background
+    console.log('Scrape triggered for:', siteKey);
+  } catch (error) {
+    console.error('Failed to trigger scrape:', error);
+    // Don't fail the request if scraping fails - user can still get embed code
   }
 
   return res.json({ siteKey });
