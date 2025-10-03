@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { website, color, additional_domains, email, tier } = req.body;
+  const { website, color, additional_domains, email, tier, additional_knowledge } = req.body;
 
   // Ensure URL has https://
   let fullUrl = website;
@@ -45,7 +45,8 @@ export default async function handler(req, res) {
       website_url: fullUrl,
       allowed_domains: domains,
       button_color: color,
-      query_limit: queryLimit
+      query_limit: queryLimit,
+      additional_knowledge: additional_knowledge || null
     });
 
   if (error) {
