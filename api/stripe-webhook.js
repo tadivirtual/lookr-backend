@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import Stripe from 'stripe';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -6,7 +7,7 @@ const supabase = createClient(
 );
 
 // Stripe webhook secret - get this from Stripe dashboard
-const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET_TEST || process.env.STRIPE_WEBHOOK_SECRET;
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const config = {
   api: {
@@ -33,7 +34,7 @@ export default async function handler(req, res) {
     const sig = req.headers['stripe-signature'];
 
     // Verify webhook signature
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     let event;
 
     try {
