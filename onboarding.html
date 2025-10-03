@@ -208,8 +208,8 @@
         const result = await response.json();
         
         if (response.ok) {
-          // Redirect to success page with site key
-          window.location.href = `/success.html?key=${result.siteKey}`;
+          // Redirect to success page with site key and color
+          window.location.href = `/success.html?key=${result.siteKey}&color=${encodeURIComponent(data.color)}`;
         } else {
           alert('Error: ' + (result.error || 'Something went wrong'));
           submitBtn.disabled = false;
