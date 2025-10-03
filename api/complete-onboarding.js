@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { website, color, additional_domains } = req.body;
+  const { website, color, additional_domains, email, tier } = req.body;
 
   // Generate unique site key
   const siteKey = 'site_' + Math.random().toString(36).substr(2, 9);
@@ -22,22 +22,30 @@ export default async function handler(req, res) {
     domains.push(...extra);
   }
 
+  // Set query limit based on tier
+  const limits = {
+    starter: 2000,
+    pro: 10000,
+    business: 50000
+  };
+  const queryLimit = limits[tier] || 2000;
+
   // Store in database
   const { error } = await supabase
     .from('sites')
     .insert({
       site_key: siteKey,
+      email: email,
       website_url: website,
       allowed_domains: domains,
-      button_color: color,
-      query_limit: 2000 // Default starter tier
+      button_color: color, // Add this column to your database first!
+      query_limit: queryLimit
     });
 
   if (error) {
-    return res.status(500).json({ error: 'Database error' });
+    console.error('Supabase error:', error);
+    return res.status(500).json({ error: 'Database error', details: error.message });
   }
 
-  // Send email with embed code (add later)
-  
   return res.json({ siteKey });
 }
