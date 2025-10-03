@@ -2,112 +2,223 @@
 <html>
 <head>
   <title>Complete Your Setup - Lookr.ai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      padding: 40px 20px;
+    }
+    .container {
       max-width: 600px;
-      margin: 50px auto;
-      padding: 20px;
+      margin: 0 auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 32px;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .subtitle {
+      color: #6b7280;
+      margin-bottom: 32px;
+      font-size: 16px;
     }
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
+      color: #374151;
+      font-size: 14px;
     }
     input, select {
       width: 100%;
-      padding: 12px;
+      padding: 12px 16px;
       border: 2px solid #e5e7eb;
       border-radius: 8px;
       font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #000000;
+    }
+    small {
+      display: block;
+      margin-top: 6px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+    .color-picker-label {
+      margin-bottom: 12px;
+    }
+    .color-picker {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .color-option {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .color-option:hover {
+      transform: scale(1.05);
+    }
+    .color-option.selected {
+      border-color: #000000;
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #000000;
+    }
+    .color-option.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
     }
     button {
-      background: #000;
+      background: #000000;
       color: white;
-      padding: 14px 32px;
+      padding: 16px 32px;
       border: none;
       border-radius: 8px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       width: 100%;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.3s;
     }
-    .color-picker {
-      display: flex;
-      gap: 12px;
+    button:hover {
+      background: #333333;
     }
-    .color-option {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
-      cursor: pointer;
-      border: 3px solid transparent;
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
     }
-    .color-option.selected {
-      border-color: #000;
+    .loading {
+      text-align: center;
+      color: #6b7280;
+      margin-top: 12px;
+      display: none;
+    }
+    .loading.visible {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <h1>Complete Your Lookr Setup</h1>
-  <p>Just a few details and you'll be ready to go!</p>
-  
-  <form id="onboarding-form">
-    <div class="form-group">
-      <label>Your Website URL</label>
-      <input type="url" name="website" placeholder="https://yoursite.com" required>
-    </div>
-
-    <div class="form-group">
-      <label>Choose Button Color</label>
-      <div class="color-picker">
-        <div class="color-option selected" data-color="#000000" style="background: #000000"></div>
-        <div class="color-option" data-color="#6366F1" style="background: #6366F1"></div>
-        <div class="color-option" data-color="#EC4899" style="background: #EC4899"></div>
-        <div class="color-option" data-color="#10B981" style="background: #10B981"></div>
+  <div class="container">
+    <h1>Complete Your Setup</h1>
+    <p class="subtitle">Just a few details and you'll get your embed code!</p>
+    
+    <form id="onboarding-form">
+      <div class="form-group">
+        <label for="website">Your Website URL</label>
+        <input type="url" id="website" name="website" placeholder="https://yoursite.com" required>
+        <small>Where you want to install the Lookr widget</small>
       </div>
-      <input type="hidden" name="color" value="#000000">
-    </div>
 
-    <div class="form-group">
-      <label>Additional Domains (optional)</label>
-      <input type="text" name="additional_domains" placeholder="www.yoursite.com, app.yoursite.com">
-      <small>Separate multiple domains with commas</small>
-    </div>
+      <div class="form-group">
+        <label class="color-picker-label">Choose Button Color</label>
+        <div class="color-picker">
+          <div class="color-option selected" data-color="#000000" style="background: #000000" title="Black"></div>
+          <div class="color-option" data-color="#FFFFFF" style="background: #FFFFFF; border: 2px solid #e5e7eb;" title="White"></div>
+          <div class="color-option" data-color="#6B7280" style="background: #6B7280" title="Gray"></div>
+          <div class="color-option" data-color="#3B82F6" style="background: #3B82F6" title="Blue"></div>
+          <div class="color-option" data-color="#EF4444" style="background: #EF4444" title="Red"></div>
+          <div class="color-option" data-color="#10B981" style="background: #10B981" title="Green"></div>
+          <div class="color-option" data-color="#F59E0B" style="background: #F59E0B" title="Amber"></div>
+          <div class="color-option" data-color="#8B5CF6" style="background: #8B5CF6" title="Purple"></div>
+          <div class="color-option" data-color="#EC4899" style="background: #EC4899" title="Pink"></div>
+        </div>
+        <input type="hidden" id="color" name="color" value="#000000">
+        <small>Pick a color that matches your brand</small>
+      </div>
 
-    <button type="submit">Generate My Embed Code</button>
-  </form>
+      <div class="form-group">
+        <label for="additional_domains">Additional Domains (optional)</label>
+        <input type="text" id="additional_domains" name="additional_domains" placeholder="www.yoursite.com, app.yoursite.com">
+        <small>Separate multiple domains with commas. Include www, staging, etc.</small>
+      </div>
+
+      <button type="submit" id="submit-btn">Generate My Embed Code</button>
+      <div class="loading" id="loading">Creating your widget...</div>
+    </form>
+  </div>
 
   <script>
+    // Get email from URL (passed from Stripe redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    const tier = urlParams.get('tier');
+
     // Color picker
     document.querySelectorAll('.color-option').forEach(option => {
       option.addEventListener('click', () => {
         document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
         option.classList.add('selected');
-        document.querySelector('input[name="color"]').value = option.dataset.color;
+        document.getElementById('color').value = option.dataset.color;
       });
     });
 
     // Form submission
     document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const loading = document.getElementById('loading');
+      
+      submitBtn.disabled = true;
+      loading.classList.add('visible');
+      
       const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData);
+      const data = {
+        ...Object.fromEntries(formData),
+        email: email,
+        tier: tier
+      };
       
-      const response = await fetch('/api/complete-onboarding', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+      try {
+        const response = await fetch('/api/complete-onboarding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
 
-      const result = await response.json();
-      
-      if (response.ok) {
-        // Show embed code page
-        window.location.href = `/success?key=${result.siteKey}`;
+        const result = await response.json();
+        
+        if (response.ok) {
+          // Redirect to success page with site key
+          window.location.href = `/success.html?key=${result.siteKey}`;
+        } else {
+          alert('Error: ' + (result.error || 'Something went wrong'));
+          submitBtn.disabled = false;
+          loading.classList.remove('visible');
+        }
+      } catch (error) {
+        alert('Network error. Please try again.');
+        submitBtn.disabled = false;
+        loading.classList.remove('visible');
       }
     });
   </script>
