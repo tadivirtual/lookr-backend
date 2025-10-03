@@ -116,7 +116,7 @@ async function validateSiteKey(siteKey, origin) {
 async function getWebsiteContent(siteKey) {
   const { data: site, error } = await supabase
     .from('sites')
-    .select('content_cache')
+    .select('content_cache, additional_knowledge')
     .eq('site_key', siteKey)
     .single();
 
@@ -128,25 +128,33 @@ async function getWebsiteContent(siteKey) {
     throw new Error('No content available. Please scrape the website first.');
   }
 
-  return site.content_cache;
+  return {
+    pages: site.content_cache.pages,
+    additionalKnowledge: site.additional_knowledge
+  };
 }
 
 // Call Gemini AI with context
 async function getAIAnswer(question, websiteContent) {
   const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-console.log('API Key exists:', !!GEMINI_API_KEY);
-console.log('API Key length:', GEMINI_API_KEY?.length);
-console.log('API Key starts with:', GEMINI_API_KEY?.substring(0, 10));
+  console.log('API Key exists:', !!GEMINI_API_KEY);
+  console.log('API Key length:', GEMINI_API_KEY?.length);
+  console.log('API Key starts with:', GEMINI_API_KEY?.substring(0, 10));
 
-if (!GEMINI_API_KEY) {
-  throw new Error('GEMINI_API_KEY not configured');
-}
+  if (!GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY not configured');
+  }
 
   // Prepare context from website content
-  const context = websiteContent.pages
+  let context = websiteContent.pages
     .map(page => page.content)
     .join('\n\n');
+
+  // Add additional knowledge if provided
+  if (websiteContent.additionalKnowledge) {
+    context += '\n\n--- Additional Information ---\n' + websiteContent.additionalKnowledge;
+  }
 
   // Build prompt
   const prompt = `You are a helpful AI assistant for a website. Answer the user's question based ONLY on the following website content. If the answer is not in the content, politely say you don't have that information.
@@ -160,7 +168,7 @@ Answer (be concise, helpful, and friendly):`;
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -232,6 +240,7 @@ async function logQuery(siteId, question, answer) {
     console.error('Failed to log query:', error);
   }
 }
+
 // Extract domain from URL
 function extractDomain(url) {
   try {
