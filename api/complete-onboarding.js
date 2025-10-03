@@ -45,8 +45,7 @@ export default async function handler(req, res) {
       website_url: fullUrl,
       allowed_domains: domains,
       button_color: color,
-      query_limit: queryLimit,
-      additional_knowledge: additional_knowledge || null
+      query_limit: queryLimit
     });
 
   if (error) {
