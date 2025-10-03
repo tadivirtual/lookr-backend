@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Complete Your Setup - Lookr.ai</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    button {
+      background: #000;
+      color: white;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
+    .color-picker {
+      display: flex;
+      gap: 12px;
+    }
+    .color-option {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 3px solid transparent;
+    }
+    .color-option.selected {
+      border-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Complete Your Lookr Setup</h1>
+  <p>Just a few details and you'll be ready to go!</p>
+  
+  <form id="onboarding-form">
+    <div class="form-group">
+      <label>Your Website URL</label>
+      <input type="url" name="website" placeholder="https://yoursite.com" required>
+    </div>
+
+    <div class="form-group">
+      <label>Choose Button Color</label>
+      <div class="color-picker">
+        <div class="color-option selected" data-color="#000000" style="background: #000000"></div>
+        <div class="color-option" data-color="#6366F1" style="background: #6366F1"></div>
+        <div class="color-option" data-color="#EC4899" style="background: #EC4899"></div>
+        <div class="color-option" data-color="#10B981" style="background: #10B981"></div>
+      </div>
+      <input type="hidden" name="color" value="#000000">
+    </div>
+
+    <div class="form-group">
+      <label>Additional Domains (optional)</label>
+      <input type="text" name="additional_domains" placeholder="www.yoursite.com, app.yoursite.com">
+      <small>Separate multiple domains with commas</small>
+    </div>
+
+    <button type="submit">Generate My Embed Code</button>
+  </form>
+
+  <script>
+    // Color picker
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.color-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        document.querySelector('input[name="color"]').value = option.dataset.color;
+      });
+    });
+
+    // Form submission
+    document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      
+      const response = await fetch('/api/complete-onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      
+      if (response.ok) {
+        // Show embed code page
+        window.location.href = `/success?key=${result.siteKey}`;
+      }
+    });
+  </script>
+</body>
+</html>
