@@ -21,66 +21,85 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { url, siteKey, email, preview } = req.body;
+    const { url, urls, siteKey, email, preview } = req.body;
 
-    if (!url) {
-      return res.status(400).json({ error: 'URL is required' });
+    // Accept either single url or array of urls
+    const urlsToScrape = urls || (url ? [url] : []);
+
+    if (urlsToScrape.length === 0) {
+      return res.status(400).json({ error: 'URL or URLs are required' });
     }
 
-    // Validate URL
-    let websiteUrl;
-    try {
-      websiteUrl = new URL(url);
-    } catch (error) {
-      return res.status(400).json({ error: 'Invalid URL format' });
-    }
+    console.log(`Starting scrape for ${urlsToScrape.length} URL(s)`);
 
-    console.log(`Starting scrape for ${url}`);
+    // Scrape all URLs and combine results
+    const allPages = [];
+    const allDomains = [];
+    let totalPagesScraped = 0;
 
-    // Scrape the website
-    const scraper = new WebScraper(url, {
-      maxPages: 50,
-      maxDepth: 3
-    });
-
-    let pages;
-    try {
-      pages = await scraper.scrape();
-    } catch (error) {
-      if (error.message === 'JAVASCRIPT_SITE') {
-        return res.status(400).json({ 
-          error: 'JavaScript-Rendered Site Detected',
-          message: 'This website uses JavaScript to display content (common with Wix, Squarespace, Webflow, and modern site builders). Our basic scraper can only read traditional HTML sites like WordPress. JavaScript site support is available on our Pro plan. Contact support@lookr.ai to upgrade.',
-          isJavaScriptSite: true
-        });
+    for (const urlToScrape of urlsToScrape) {
+      // Validate URL
+      let websiteUrl;
+      try {
+        websiteUrl = new URL(urlToScrape);
+      } catch (error) {
+        console.error(`Invalid URL: ${urlToScrape}`);
+        continue; // Skip invalid URLs
       }
-      throw error;
+
+      console.log(`Scraping ${urlToScrape}...`);
+
+      // Scrape the website
+      const scraper = new WebScraper(urlToScrape, {
+        maxPages: 50,
+        maxDepth: 3
+      });
+
+      let pages;
+      try {
+        pages = await scraper.scrape();
+      } catch (error) {
+        if (error.message === 'JAVASCRIPT_SITE') {
+          console.error(`JavaScript site detected: ${urlToScrape}`);
+          // Continue with other URLs instead of failing completely
+          continue;
+        }
+        console.error(`Error scraping ${urlToScrape}:`, error);
+        continue;
+      }
+
+      if (pages.length > 0) {
+        allPages.push(...pages);
+        totalPagesScraped += pages.length;
+        console.log(`Scraped ${pages.length} pages from ${urlToScrape}`);
+      }
+
+      // Collect domains
+      const domain = websiteUrl.hostname;
+      if (!allDomains.includes(domain)) {
+        allDomains.push(domain);
+        // Add www variant
+        if (!domain.startsWith('www.')) {
+          allDomains.push(`www.${domain}`);
+        } else {
+          allDomains.push(domain.replace('www.', ''));
+        }
+      }
     }
 
-    if (pages.length === 0) {
+    if (allPages.length === 0) {
       return res.status(400).json({ 
         error: 'No content found',
-        message: 'The website may be blocking our crawler or contains no readable text. Please ensure the site is publicly accessible.'
+        message: 'Could not scrape any content from the provided URLs. Sites may be blocking our crawler or contain no readable text.'
       });
     }
 
-    console.log(`Scraped ${pages.length} pages`);
+    console.log(`Total pages scraped: ${totalPagesScraped} from ${urlsToScrape.length} site(s)`);
 
     // Generate site key if not provided
     const finalSiteKey = siteKey || `site_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Get domain for allowed_domains
-    const domain = websiteUrl.hostname;
-    const allowedDomains = [domain];
-    
-    // Add www variant if not present
-    if (!domain.startsWith('www.')) {
-      allowedDomains.push(`www.${domain}`);
-    } else {
-      allowedDomains.push(domain.replace('www.', ''));
-    }
-
-   // Store in database
+    // Store in database
     const { data: existingSite } = await supabase
       .from('sites')
       .select('*')
@@ -92,9 +111,10 @@ export default async function handler(req, res) {
       const { error } = await supabase
         .from('sites')
         .update({
-          content_cache: { pages },
+          content_cache: { pages: allPages },
           last_scraped: new Date().toISOString(),
-          website_url: url,
+          website_url: urlsToScrape[0], // Store primary URL
+          allowed_domains: allDomains,
           expires_at: preview ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() : null,
           is_preview: preview || false
         })
@@ -113,9 +133,9 @@ export default async function handler(req, res) {
         .insert({
           site_key: finalSiteKey,
           email,
-          allowed_domains: allowedDomains,
-          website_url: url,
-          content_cache: { pages },
+          allowed_domains: allDomains,
+          website_url: urlsToScrape[0], // Store primary URL
+          content_cache: { pages: allPages },
           last_scraped: new Date().toISOString(),
           expires_at: preview ? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() : null,
           is_preview: preview || false
@@ -132,8 +152,9 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       siteKey: finalSiteKey,
-      pagesScraped: pages.length,
-      message: `Successfully scraped ${pages.length} pages from ${domain}`
+      pagesScraped: totalPagesScraped,
+      sitesScraped: urlsToScrape.length,
+      message: `Successfully scraped ${totalPagesScraped} pages from ${urlsToScrape.length} site(s)`
     });
 
   } catch (error) {
