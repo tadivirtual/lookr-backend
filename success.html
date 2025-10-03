@@ -189,12 +189,13 @@
   </div>
 
   <script>
-    // Get site key from URL
+    // Get site key and color from URL
     const urlParams = new URLSearchParams(window.location.search);
     const siteKey = urlParams.get('key');
+    const buttonColor = urlParams.get('color') || '#000000';
 
-    // Update embed code
-    const embedCode = `<script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="${siteKey}"><\/script>`;
+    // Update embed code with color
+    const embedCode = `<script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="${siteKey}" data-color="${buttonColor}"><\/script>`;
     document.getElementById('embed-code').textContent = embedCode;
 
     // Copy code function
