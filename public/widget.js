@@ -11,6 +11,23 @@
     return;
   }
 
+  // Determine text color based on background brightness
+  function getTextColor(hexColor) {
+    // Convert hex to RGB
+    const hex = hexColor.replace('#', '');
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Calculate relative luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return black text for light backgrounds, white for dark
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
+  }
+
+  const textColor = getTextColor(buttonColor);
+
   // Create styles
   const styles = `
     #lookr-widget-button {
@@ -19,7 +36,7 @@
       right: 24px;
       height: 30px;
       background: ${buttonColor};
-      color: white;
+      color: ${textColor};
       border: none;
       border-radius: 20px;
       padding: 10px 30px;
