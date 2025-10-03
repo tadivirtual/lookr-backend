@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Lookr Widget is Ready! - Lookr.ai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f9fafb;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 48px;
+    }
+    h1 {
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+    }
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 40px;
+      font-size: 18px;
+    }
+    .step {
+      margin-bottom: 32px;
+    }
+    .step-number {
+      display: inline-block;
+      background: #000000;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 32px;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+    .step h3 {
+      display: inline;
+      font-size: 18px;
+      color: #1a1a1a;
+    }
+    .step p {
+      margin-top: 12px;
+      margin-left: 44px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+    .code-box {
+      background: #1f2937;
+      color: #10b981;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 16px 0 16px 44px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      position: relative;
+      overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #374151;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: #4b5563;
+    }
+    .copy-btn.copied {
+      background: #10b981;
+    }
+    .info-box {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+    .info-box p {
+      color: #1e40af;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .cta {
+      background: #000000;
+      color: white;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      margin-top: 24px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+    .cta:hover {
+      background: #333333;
+    }
+    .help-text {
+      text-align: center;
+      margin-top: 24px;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+    .help-text a {
+      color: #000000;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon">🎉</div>
+    <h1>You're All Set!</h1>
+    <p class="subtitle">Your Lookr widget is ready to go. Just add the code below to your website.</p>
+
+    <div class="step">
+      <span class="step-number">1</span>
+      <h3>Copy Your Embed Code</h3>
+      <p>This unique code connects your website to Lookr. Click the button to copy it.</p>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode()">Copy Code</button>
+        <code id="embed-code">&lt;script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="LOADING"&gt;&lt;/script&gt;</code>
+      </div>
+    </div>
+
+    <div class="step">
+      <span class="step-number">2</span>
+      <h3>Paste It Into Your Website</h3>
+      <p>Add the code right before the closing <code>&lt;/body&gt;</code> tag in your website's HTML. The exact location depends on your platform:</p>
+      <p style="margin-left: 44px; margin-top: 8px;">
+        <strong>WordPress:</strong> Appearance → Theme Editor → footer.php<br>
+        <strong>Shopify:</strong> Online Store → Themes → Edit Code → theme.liquid<br>
+        <strong>Custom HTML:</strong> Add to your footer template
+      </p>
+    </div>
+
+    <div class="step">
+      <span class="step-number">3</span>
+      <h3>Test It Out!</h3>
+      <p>Visit your website and look for the "Ask AI" button in the bottom right. Click it and ask a question to make sure it's working.</p>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Need help installing?</strong> Reply to your welcome email and we'll guide you through the process. For WordPress and Shopify sites, we can point you to the exact file to edit.</p>
+    </div>
+
+    <a href="https://lookr.ai" class="cta">Back to Lookr.ai</a>
+    
+    <p class="help-text">Having trouble? Email us at <a href="mailto:support@lookr.ai">support@lookr.ai</a></p>
+  </div>
+
+  <script>
+    // Get site key from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const siteKey = urlParams.get('key');
+
+    // Update embed code
+    const embedCode = `<script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="${siteKey}"><\/script>`;
+    document.getElementById('embed-code').textContent = embedCode;
+
+    // Copy code function
+    function copyCode() {
+      const code = document.getElementById('embed-code').textContent;
+      navigator.clipboard.writeText(code);
+      
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copied! ✓';
+      btn.classList.add('copied');
+      
+      setTimeout(() => {
+        btn.textContent = 'Copy Code';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
