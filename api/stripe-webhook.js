@@ -13,6 +13,29 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  // ADD THESE DEBUG LINES HERE (right after the method check)
+  console.log('=== WEBHOOK DEBUG ===');
+  console.log('STRIPE_WEBHOOK_SECRET exists:', !!process.env.STRIPE_WEBHOOK_SECRET);
+  console.log('STRIPE_WEBHOOK_SECRET starts with:', process.env.STRIPE_WEBHOOK_SECRET?.substring(0, 10));
+  console.log('STRIPE_SECRET_KEY exists:', !!process.env.STRIPE_SECRET_KEY);
+  console.log('Body type:', typeof req.body);
+  console.log('Signature present:', !!req.headers['stripe-signature']);
+  console.log('=====================');
+
+  try {
+    const sig = req.headers['stripe-signature'];
+    const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(body, sig, STRIPE_WEBHOOK_SECRET);
+    } catch (err) {
+      console.error('Signature verification error:', err.message);
+      console.error('Expected secret starts with:', STRIPE_WEBHOOK_SECRET?.substring(0, 10));
+      return res.status(400).json({ error: 'Webhook signature verification failed' });
+    }
+    
+    // YOUR EXISTING CODE CONTINUES HERE...
 
   try {
     const sig = req.headers['stripe-signature'];
