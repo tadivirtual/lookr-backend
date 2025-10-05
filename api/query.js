@@ -81,6 +81,11 @@ async function validateSiteKey(siteKey, origin) {
     return { valid: false };
   }
 
+  // Check if subscription is still active
+  if (!site.active) {
+    return { valid: false, reason: 'Subscription cancelled' };
+  }
+
   // TEMPORARILY DISABLED FOR TESTING
   /*
   // Check domain if origin provided
