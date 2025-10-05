@@ -69,6 +69,13 @@
       border-color: #667eea;
     }
 
+    small {
+      display: block;
+      margin-top: 6px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
     .btn {
       width: 100%;
       padding: 16px;
@@ -86,6 +93,21 @@
       background: #5568d3;
     }
 
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      margin-top: 12px;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
     .error {
       background: #fee;
       color: #c33;
@@ -96,6 +118,19 @@
     }
 
     .error.show {
+      display: block;
+    }
+
+    .success-message {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success-message.show {
       display: block;
     }
 
@@ -116,6 +151,13 @@
       box-shadow: 0 4px 24px rgba(0,0,0,0.1);
     }
 
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
     .header h1 {
       font-size: 32px;
       color: #1a1a1a;
@@ -127,8 +169,12 @@
       font-size: 18px;
     }
 
-    .logout-btn {
-      float: right;
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .logout-btn, .rescrape-btn {
       background: #f5f5f5;
       color: #666;
       padding: 10px 20px;
@@ -136,10 +182,25 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
+      transition: background 0.3s;
     }
 
-    .logout-btn:hover {
+    .logout-btn:hover, .rescrape-btn:hover {
       background: #e5e5e5;
+    }
+
+    .rescrape-btn {
+      background: #667eea;
+      color: white;
+    }
+
+    .rescrape-btn:hover {
+      background: #5568d3;
+    }
+
+    .rescrape-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
     }
 
     .stats-grid {
@@ -264,11 +325,13 @@
         font-size: 28px;
       }
 
-      .logout-btn {
-        float: none;
-        display: block;
+      .header-actions {
+        flex-direction: column;
         width: 100%;
-        margin-top: 16px;
+      }
+
+      .logout-btn, .rescrape-btn {
+        width: 100%;
       }
     }
   </style>
@@ -302,9 +365,17 @@
   <div id="dashboard" class="dashboard">
     <div class="container">
       <div class="header">
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        <h1>Analytics Dashboard</h1>
-        <div class="site-url" id="siteUrl"></div>
+        <div class="header-top">
+          <div>
+            <h1>Analytics Dashboard</h1>
+            <div class="site-url" id="siteUrl"></div>
+          </div>
+          <div class="header-actions">
+            <button class="rescrape-btn" id="rescrapeBtn" onclick="rescrapesite()">🔄 Re-scrape Site</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+          </div>
+        </div>
+        <div id="successMessage" class="success-message"></div>
       </div>
 
       <div class="stats-grid">
@@ -336,6 +407,7 @@
 
   <script>
     const API_URL = window.location.origin + '/api/get-analytics';
+    const RESCRAPE_URL = window.location.origin + '/api/rescrape';
     let currentSiteKey = null;
 
     // Login form handler
@@ -376,6 +448,44 @@
         errorDiv.classList.add('show');
       }
     });
+
+    // Re-scrape function
+    async function rescrapesite() {
+      if (!currentSiteKey) return;
+      
+      const btn = document.getElementById('rescrapeBtn');
+      const successMsg = document.getElementById('successMessage');
+      
+      btn.disabled = true;
+      btn.textContent = '🔄 Re-scraping...';
+      successMsg.classList.remove('show');
+      
+      try {
+        const response = await fetch(RESCRAPE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ siteKey: currentSiteKey })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          successMsg.textContent = `✓ Successfully re-scraped ${data.pagesScraped} pages! Your AI will now have the latest content.`;
+          successMsg.classList.add('show');
+          
+          setTimeout(() => {
+            successMsg.classList.remove('show');
+          }, 5000);
+        } else {
+          alert('Failed to re-scrape: ' + (data.error || 'Unknown error'));
+        }
+      } catch (error) {
+        alert('Network error during re-scrape. Please try again.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🔄 Re-scrape Site';
+      }
+    }
 
     // Load dashboard with data
     function loadDashboard(data) {
