@@ -96,6 +96,17 @@
       font-size: 14px;
       line-height: 1.6;
     }
+    .site-key-box {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      color: #166534;
+      font-weight: 600;
+    }
     .info-box {
       background: #eff6ff;
       border: 1px solid #93c5fd;
@@ -200,6 +211,15 @@
       </div>
     </div>
 
+    <div style="background: #f0fdf4; border: 2px solid #86efac; padding: 24px; border-radius: 12px; margin-bottom: 32px;">
+      <h3 style="color: #166534; font-size: 18px; margin-bottom: 12px;">Pro & Business: Your Site Key</h3>
+      <p style="color: #166534; margin-bottom: 12px; font-size: 14px; line-height: 1.6;">Save this key to access your analytics dashboard:</p>
+      <div class="site-key-box" id="site-key-display">Loading...</div>
+      <p style="color: #166534; font-size: 14px; line-height: 1.6;">
+        Visit <a href="https://lookr-backend-tadis-projects-fd06034e.vercel.app/analytics.html" target="_blank" style="color: #166534; font-weight: 600;">lookr.ai/analytics</a> to log in and see what customers are asking in real-time, popular queries, and usage stats.
+      </p>
+    </div>
+
     <div class="info-box">
       <h3>What happens to your credentials?</h3>
       <ul>
@@ -212,15 +232,6 @@
 
     <div class="contact-box">
       <p><strong>Need to make changes?</strong> Contact us at <a href="mailto:support@lookr.ai">support@lookr.ai</a></p>
-    </div>
-
-    <div class="info-box" style="background: #f0fdf4; border: 1px solid #86efac; margin-bottom: 32px;">
-      <h3 style="color: #166534;">Pro & Business Users: Analytics Dashboard</h3>
-      <ul style="margin-left: 20px; color: #166534;">
-        <li>View your analytics dashboard at <a href="https://lookr-backend-tadis-projects-fd06034e.vercel.app/analytics.html" style="color: #166534; font-weight: 600;" target="_blank">lookr.ai/analytics</a></li>
-        <li>Use your site key to log in and see what questions customers are asking in real-time</li>
-        <li>Available immediately after installation is complete</li>
-      </ul>
     </div>
 
     <div class="info-box" style="background: #fff7ed; border: 1px solid #fed7aa; margin-bottom: 32px;">
@@ -238,9 +249,13 @@
   </div>
 
   <script>
-    // Optional: Track the site key for internal reference
+    // Get site key from URL
     const urlParams = new URLSearchParams(window.location.search);
     const siteKey = urlParams.get('key');
+    
+    // Display site key
+    document.getElementById('site-key-display').textContent = siteKey;
+    
     console.log('DFY Installation Request for:', siteKey);
   </script>
 </body>
