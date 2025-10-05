@@ -43,7 +43,6 @@ export default async function handler(req, res) {
     
     // Add allowed domains if they exist
     if (site.allowed_domains && site.allowed_domains.length > 1) {
-      // Add additional domains (skip first one as it's already in website_url)
       const additionalUrls = site.allowed_domains
         .slice(1)
         .map(domain => {
@@ -53,7 +52,7 @@ export default async function handler(req, res) {
       urlsToScrape.push(...additionalUrls);
     }
 
-    // 3. Trigger scraping
+    // 3. Trigger scraping (scrape API updates database directly)
     const SCRAPE_API_URL = process.env.VERCEL_URL 
       ? `https://${process.env.VERCEL_URL}/api/scrape`
       : 'http://localhost:3000/api/scrape';
@@ -61,40 +60,37 @@ export default async function handler(req, res) {
     const scrapeResponse = await fetch(SCRAPE_API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ urls: urlsToScrape })
+      body: JSON.stringify({ 
+        urls: urlsToScrape,
+        siteKey: siteKey
+      })
     });
 
     const scrapeData = await scrapeResponse.json();
 
-    // Check if scraping actually succeeded
-    if (!scrapeResponse.ok) {
+    if (!scrapeResponse.ok || !scrapeData.success) {
       console.error('Scrape failed:', scrapeData);
       throw new Error(scrapeData.error || 'Scraping failed');
     }
 
-    if (!scrapeData.content || !scrapeData.content.pages) {
-      console.error('Invalid scrape data:', scrapeData);
-      throw new Error('Scraping returned invalid data');
-    }
-
-    // 4. Update site with new content
-    const { error: updateError } = await supabase
+    // 4. Get the updated content from database
+    const { data: updatedSite, error: fetchError } = await supabase
       .from('sites')
-      .update({
-        content_cache: scrapeData.content
-      })
-      .eq('site_key', siteKey);
+      .select('content_cache')
+      .eq('site_key', siteKey)
+      .single();
 
-    if (updateError) {
-      console.error('Database update error:', updateError);
-      throw updateError;
+    if (fetchError || !updatedSite || !updatedSite.content_cache) {
+      throw new Error('Failed to retrieve updated content');
     }
+
+    const pagesScraped = updatedSite.content_cache.pages?.length || scrapeData.pagesScraped || 0;
 
     // 5. Return success
     return res.status(200).json({
       success: true,
       message: 'Site re-scraped successfully',
-      pagesScraped: scrapeData.content.pages.length
+      pagesScraped: pagesScraped
     });
 
   } catch (error) {
