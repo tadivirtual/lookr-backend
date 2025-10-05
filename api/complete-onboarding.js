@@ -45,7 +45,10 @@ export default async function handler(req, res) {
       website_url: fullUrl,
       allowed_domains: domains,
       button_color: color,
-      query_limit: queryLimit
+      query_limit: queryLimit,
+      tier: tier,
+      additional_knowledge: additional_knowledge || '',
+      active: true
     });
 
   if (error) {
@@ -75,7 +78,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        urls: urlsToScrape,  // Pass array of URLs
+        urls: urlsToScrape,
         siteKey: siteKey 
       })
     });
