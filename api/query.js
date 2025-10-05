@@ -7,6 +7,9 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+// Rate limits
+const HOURLY_LIMIT = 100; // Max queries per hour per site
+
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,19 +40,30 @@ export default async function handler(req, res) {
     }
 
     if (siteData.limitExceeded) {
-      return res.status(429).json({ error: 'Rate limit exceeded' });
+      return res.status(429).json({ error: 'Monthly rate limit exceeded' });
     }
 
-    // 2. Get website content (from cache or scrape)
+    // 2. Check hourly rate limit
+    const hourlyCheck = await checkHourlyLimit(siteData.id);
+    if (hourlyCheck.exceeded) {
+      console.warn(`Hourly limit exceeded for site ${siteKey}: ${hourlyCheck.count} queries in last hour`);
+      return res.status(429).json({ 
+        error: 'Hourly rate limit exceeded. Please try again later.',
+        queriesThisHour: hourlyCheck.count,
+        maxPerHour: HOURLY_LIMIT
+      });
+    }
+
+    // 3. Get website content (from cache or scrape)
     const websiteContent = await getWebsiteContent(siteKey);
 
-    // 3. Call Gemini AI with context
+    // 4. Call Gemini AI with context
     const answer = await getAIAnswer(question, websiteContent);
 
-    // 4. Log the query (for analytics)
+    // 5. Log the query (for analytics)
     await logQuery(siteData.id, question, answer);
 
-    // 5. Return response
+    // 6. Return response
     return res.status(200).json({
       answer: answer,
       success: true
@@ -67,6 +81,28 @@ export default async function handler(req, res) {
 // ============================================
 // Helper Functions
 // ============================================
+
+// Check hourly rate limit
+async function checkHourlyLimit(siteId) {
+  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+  
+  const { data, error } = await supabase
+    .from('queries')
+    .select('id')
+    .eq('site_id', siteId)
+    .gte('created_at', oneHourAgo);
+
+  if (error) {
+    console.error('Error checking hourly limit:', error);
+    return { exceeded: false, count: 0 }; // Fail open to avoid blocking legitimate traffic
+  }
+
+  const count = data?.length || 0;
+  return {
+    exceeded: count >= HOURLY_LIMIT,
+    count: count
+  };
+}
 
 // Validate site key and check permissions
 async function validateSiteKey(siteKey, origin) {
@@ -104,7 +140,7 @@ async function validateSiteKey(siteKey, origin) {
   }
   */
 
-  // Check rate limit
+  // Check monthly rate limit
   const limitExceeded = site.query_count >= site.query_limit;
 
   return {
