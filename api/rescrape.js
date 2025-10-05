@@ -64,21 +64,29 @@ export default async function handler(req, res) {
       body: JSON.stringify({ urls: urlsToScrape })
     });
 
+    const scrapeData = await scrapeResponse.json();
+
+    // Check if scraping actually succeeded
     if (!scrapeResponse.ok) {
-      throw new Error('Scraping failed');
+      console.error('Scrape failed:', scrapeData);
+      throw new Error(scrapeData.error || 'Scraping failed');
     }
 
-    const scrapeData = await scrapeResponse.json();
+    if (!scrapeData.content || !scrapeData.content.pages) {
+      console.error('Invalid scrape data:', scrapeData);
+      throw new Error('Scraping returned invalid data');
+    }
 
     // 4. Update site with new content
     const { error: updateError } = await supabase
       .from('sites')
       .update({
-        content_cache: scrapeData.content,
+        content_cache: scrapeData.content
       })
       .eq('site_key', siteKey);
 
     if (updateError) {
+      console.error('Database update error:', updateError);
       throw updateError;
     }
 
@@ -93,7 +101,7 @@ export default async function handler(req, res) {
     console.error('Re-scrape API Error:', error);
     return res.status(500).json({ 
       error: 'Failed to re-scrape site',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: error.message || 'Unknown error'
     });
   }
 }
