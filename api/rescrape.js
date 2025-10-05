@@ -75,7 +75,6 @@ export default async function handler(req, res) {
       .from('sites')
       .update({
         content_cache: scrapeData.content,
-        updated_at: new Date().toISOString()
       })
       .eq('site_key', siteKey);
 
