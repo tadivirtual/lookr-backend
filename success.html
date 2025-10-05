@@ -102,6 +102,17 @@
     .copy-btn.copied {
       background: #10b981;
     }
+    .site-key-box {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 16px 0 16px 44px;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      color: #166534;
+      font-weight: 600;
+    }
     .info-box {
       background: #eff6ff;
       border: 1px solid #93c5fd;
@@ -175,16 +186,22 @@
 
     <div class="step">
       <span class="step-number">3</span>
-      <h3>Test It Out!</h3>
+      <h3>Test It Out</h3>
       <p>Visit your website and look for the "Ask AI" button in the bottom right. Click it and ask a question to make sure it's working.</p>
+    </div>
+
+    <div class="step">
+      <span class="step-number">4</span>
+      <h3>Pro & Business: Access Your Analytics</h3>
+      <p>Use your site key to view what customers are asking in real-time:</p>
+      <div class="site-key-box" id="site-key-display">Loading...</div>
+      <p style="margin-top: 12px;">
+        Save this key and visit <a href="https://lookr-backend-tadis-projects-fd06034e.vercel.app/analytics.html" target="_blank" style="color: #000; font-weight: 600;">lookr.ai/analytics</a> to log in and see customer questions, popular queries, and usage stats.
+      </p>
     </div>
 
     <div class="info-box">
       <p><strong>Need help installing?</strong> Reply to your welcome email and we'll guide you through the process. For WordPress and Shopify sites, we can point you to the exact file to edit.</p>
-    </div>
-
-    <div class="info-box" style="background: #f0fdf4; border-color: #86efac;">
-      <p style="color: #166534;"><strong>Pro & Business users:</strong> View your analytics dashboard at <a href="https://lookr-backend-tadis-projects-fd06034e.vercel.app/analytics.html" style="color: #166534; font-weight: 600;" target="_blank">lookr.ai/analytics</a>. Use your site key to log in and see what questions customers are asking in real-time.</p>
     </div>
 
     <div class="info-box" style="background: #fff7ed; border-color: #fed7aa;">
@@ -205,6 +222,9 @@
     // Update embed code with color
     const embedCode = `<script src="https://lookr-backend-tadis-projects-fd06034e.vercel.app/widget.js" data-key="${siteKey}" data-color="${buttonColor}"><\/script>`;
     document.getElementById('embed-code').textContent = embedCode;
+
+    // Display site key
+    document.getElementById('site-key-display').textContent = siteKey;
 
     // Copy code function
     function copyCode() {
